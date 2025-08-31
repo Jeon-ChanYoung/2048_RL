@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 RL Autoplay</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>2048 RL Autoplay</h1>
+    <div class="status">
+        <div class="badge">Score: <span id="score">0</span></div>
+        <div class="badge">Action: <span id="action">-</span></div>
+        <div class="badge">Done: <span id="done">false</span></div>
+        <div class="badge">Session: <span id="sid">-</span></div>
+    </div>
+
+    <div class="board" id="board">
+        <div class="controls">
+            <button id="new">🆕 New Session</button>
+            <button id="reset" class="secondary">↩️ Reset</button>
+            <button id="step">🤖 Step (Agent)</button>
+            <button id="auto">🚀 Auto Play</button>
+            <button id="stop" class="secondary">⏹ Stop Auto</button>
+        </div>
+    </div>
+
+    <script src="javascript.js"></script>
+</body>
+</html>
