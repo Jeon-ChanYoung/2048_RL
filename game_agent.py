@@ -296,7 +296,7 @@ class RLAgent:
     def __init__(self, model_path = model_path, device = None):
         self.device = device or ("cuda" if torch.cuda.is_available() else "cpu")
         self.main_net = DQN().to(self.device)
-        # self.main_net.load_state_dict(torch.load(model_path, map_location=self.device))
+        self.main_net.load_state_dict(torch.load(model_path, map_location=self.device))
         self.main_net.eval()
 
     def act(self, env: Game2048Env):
