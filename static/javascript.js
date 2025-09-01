@@ -1,15 +1,15 @@
 async function resetGame() {
+    stopAutoPlay();
     const res = await fetch("/api/reset");
     const data = await res.json();   // 서버에서 JSON 반환한다고 가정
     renderBoard(data.board);
-    stopAutoPlay();
 }
 
 async function stepGame() {
+    stopAutoPlay();
     const res = await fetch("/api/step");
     const data = await res.json();
     renderBoard(data.board);
-    stopAutoPlay();
 }
 
 let isAutoPlaying = false;
@@ -40,7 +40,7 @@ function stopAutoPlay() {
 function initBoard() {
     const boardDiv = document.getElementById("board");
     boardDiv.innerHTML = ""; // 초기화
-
+    
     for(let i=0; i<4; i++) {
         for(let j=0; j<4; j++) {
             const cellDiv = document.createElement("div");
@@ -49,6 +49,7 @@ function initBoard() {
             boardDiv.appendChild(cellDiv);
         }
     }
+    resetGame();
 }
 
 // 보드 숫자 갱신
@@ -65,6 +66,11 @@ function renderBoard(board) {
         }
     }
 }
+
+document.getElementById("resetBtn").addEventListener("click", resetGame);
+document.getElementById("stepBtn").addEventListener("click", stepGame);
+document.getElementById("autoBtn").addEventListener("click", autoPlay);
+document.getElementById("stopBtn").addEventListener("click", stopAutoPlay);
 
 // 페이지 로드 시 초기화
 window.onload = () => {
