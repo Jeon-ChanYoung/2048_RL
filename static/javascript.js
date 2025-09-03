@@ -1,7 +1,7 @@
 async function resetGame() {
     stopAutoPlay();
     const res = await fetch("/api/reset");
-    const data = await res.json();   // 서버에서 JSON 반환한다고 가정
+    const data = await res.json(); 
     renderBoard(data.board);
 }
 
@@ -27,14 +27,13 @@ async function autoPlay() {
             break
         }
 
-        await new Promise(r => setTimeout(r, 10));
+        await new Promise(r => setTimeout(r, 5));
     }
 }
 
 function stopAutoPlay() {
     isAutoPlaying = false;
 }
-
 
 // 처음 한 번만 보드 구조 생성
 function initBoard() {
@@ -72,7 +71,6 @@ document.getElementById("stepBtn").addEventListener("click", stepGame);
 document.getElementById("autoBtn").addEventListener("click", autoPlay);
 document.getElementById("stopBtn").addEventListener("click", stopAutoPlay);
 
-// 페이지 로드 시 초기화
 window.onload = () => {
     initBoard();
 };

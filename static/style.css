@@ -9,26 +9,26 @@ h1 {
 }
 
 .controls button {
-  background: linear-gradient(to bottom, #e0d8c5, #cfc3a6); /* 기존보다 어둡게 */
+  background: linear-gradient(to bottom, #e0d8c5, #cfc3a6); 
   border: none;
   border-radius: 8px;
   padding: 10px 20px;
   margin: 5px;
   font-size: 18px;
   font-weight: bold;
-  color: #4b3a2a; /* 글자도 살짝 어둡게 */
+  color: #4b3a2a;
   cursor: pointer;
-  box-shadow: 0 5px 0 #a8987a; /* 그림자 깊게 */
+  box-shadow: 0 5px 0 #a8987a; 
   transition: all 0.1s ease-in-out;
 }
 
 .controls button:hover {
-  background: linear-gradient(to bottom, #e6decf, #d9cfa8); /* 살짝 밝아짐 */
+  background: linear-gradient(to bottom, #e6decf, #d9cfa8);
 }
 
 .controls button:active {
-  box-shadow: 0 2px 0 #a8987a; /* 그림자 더 깊게 들어감 */
-  transform: translateY(3px);   /* 눌리는 이동감 증가 */
+  box-shadow: 0 2px 0 #a8987a; 
+  transform: translateY(3px); 
 }
 
 .controls button:focus {

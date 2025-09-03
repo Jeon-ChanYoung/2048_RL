@@ -1,89 +1,9 @@
-from collections import deque
-import math
-import matplotlib.pyplot as plt
 import numpy as np
 import random
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
-
-# 평가 함수 정의
-def evaluation(grid, n_empty):
-    grid = np.array(grid)
-    score = 0
-
-    # grid sum
-    big_t = np.sum(np.power(grid, 2))
-
-    # smoothness
-    smoothness = 0
-    s_grid = np.sqrt(grid)
-
-    smoothness -= np.sum(np.abs(s_grid[:, 0] - s_grid[:, 1]))
-    smoothness -= np.sum(np.abs(s_grid[:, 1] - s_grid[:, 2]))
-    smoothness -= np.sum(np.abs(s_grid[:, 2] - s_grid[:, 3]))
-    smoothness -= np.sum(np.abs(s_grid[0, :] - s_grid[1, :]))
-    smoothness -= np.sum(np.abs(s_grid[1, :] - s_grid[2, :]))
-    smoothness -= np.sum(np.abs(s_grid[2, :] - s_grid[3, :]))
-
-    # monotonicity
-    monotonic_up = 0
-    monotonic_down = 0
-    monotonic_left = 0
-    monotonic_right = 0
-
-    for x in range(4):
-        current = 0
-        next = current + 1
-        while next < 4:
-            while next < 3 and not grid[next, x]:
-                next += 1
-            current_cell = grid[current, x]
-            current_value = math.log(current_cell, 2) if current_cell else 0
-            next_cell = grid[next, x]
-            next_value = math.log(next_cell, 2) if next_cell else 0
-            if current_value > next_value:
-                monotonic_up += (next_value - current_value)
-            elif next_value > current_value:
-                monotonic_down += (current_value - next_value)
-            current = next
-            next += 1
-
-    for y in range(4):
-        current = 0
-        next = current + 1
-        while next < 4:
-            while next < 3 and not grid[y, next]:
-                next += 1
-            current_cell = grid[y, current]
-            current_value = math.log(current_cell, 2) if current_cell else 0
-            next_cell = grid[y, next]
-            next_value = math.log(next_cell, 2) if next_cell else 0
-            if current_value > next_value:
-                monotonic_left += (next_value - current_value)
-            elif next_value > current_value:
-                monotonic_right += (current_value - next_value)
-            current = next
-            next += 1
-
-    monotonic = max(monotonic_up, monotonic_down) + max(monotonic_left, monotonic_right)
-
-    # weight for each score
-    empty_w = 100000
-    smoothness_w = 3
-    monotonic_w = 10000
-
-    empty_u = n_empty * empty_w
-    smooth_u = smoothness ** smoothness_w
-    monotonic_u = monotonic * monotonic_w
-
-    score += big_t
-    score += empty_u
-    score += smooth_u
-    score += monotonic_u
-
-    return score
 
 class Game2048Env:
     def __init__(self, size=4):
@@ -130,9 +50,6 @@ class Game2048Env:
             self.state[r, c] = 2 if random.random() < 0.9 else 4
 
     def _simulate_move(self, tmp_state, action):
-        """
-        보드의 상태를 변경하지 않고, 주어진 액션을 가상으로 적용하여 새로운 상태를 계산
-        """
         rotated = np.rot90(tmp_state, action)  # 회전해서 좌측 이동으로 통일
         new_board = np.zeros_like(rotated)
 
@@ -158,10 +75,6 @@ class Game2048Env:
         return new_state, 0
     
     def _move(self, action):
-        """
-        보드 이동 및 합치기
-        return: new_state, reward
-        """
         rotated = np.rot90(self.state, action)  # 회전해서 좌측 이동으로 통일
         new_board = np.zeros_like(rotated)
         max_tile_before = self.state.max()
@@ -185,11 +98,9 @@ class Game2048Env:
         # 다시 회전 복구
         new_state = np.rot90(new_board, -action)
 
-        # 빈 칸 수 계산 (n_empty)
-        n_empty = np.sum(new_state == 0)
-
         # 보상 계산
-        reward = evaluation(new_state, n_empty)
+        # reward = evaluation(new_state, n_empty)
+        reward = 0
 
         return new_state, reward
 
@@ -243,8 +154,6 @@ class DQN(nn.Module):
 
         # Concatenate all flattened outputs
         concat = torch.cat((x1, x2, x11, x12, x21, x22), dim=1)
-
-        # Pass through fully connected layers
         return self.fc(concat)
     
     def _get_flattened_size(self):
@@ -276,19 +185,6 @@ def one_hot_encode(state, maxtile = 16):
             if 0 <= v < maxtile:
                 one_hot_state[0, v, i, j] = 1.0
     return one_hot_state
- 
-class Memory:
-    def __init__(self):
-        self.memory_buffer = deque(maxlen = 100000)
-
-    def add(self, state, action, reward, next_state, done):
-        self.memory_buffer.append((state, action, reward, next_state, done))
-
-    def sample(self, batch_size):
-        return random.sample(self.memory_buffer, batch_size)
-
-    def __len__(self):
-        return len(self.memory_buffer)
 
 model_path = "main_net2048.pth"
 
