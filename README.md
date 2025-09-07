@@ -3,11 +3,13 @@
 강화학습(Deep Reinforcement Learning)을 통해 2048 게임을 학습하고 플레이하는 프로젝트입니다.  
 실시간으로 학습된 에이전트의 플레이를 웹에서 확인할 수 있습니다.
 
- **데모 사이트:** [2048RL Demo](https://2048rl-demo.onrender.com)
+<img src="screenshot.png" alt="2048RL 스크린샷" width="500">
+
+**데모 사이트:** [2048RL Demo](https://2048rl-demo.onrender.com)
 
 ---
 
-## 🛠 기술 스택
+## 기술 스택
 
 | 분야        | 기술 |
 |-------------|------|
